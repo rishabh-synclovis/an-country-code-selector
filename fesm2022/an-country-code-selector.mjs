@@ -45,7 +45,7 @@ const COUNTRIES = [
     { name: 'Colombia', iso2: 'CO', flag: '🇨🇴', dialCode: '+57', minLength: 10, maxLength: 10 },
     { name: 'Comoros', iso2: 'KM', flag: '🇰🇲', dialCode: '+269', minLength: 7, maxLength: 7 },
     { name: 'Congo (Brazzaville)', iso2: 'CG', flag: '🇨🇬', dialCode: '+242', minLength: 9, maxLength: 9 },
-    { name: 'Congo (DRC)', iso2: 'CD', flag: '🇨🇩', dialCode: '+243', minLength: 9, maxLength: 9 },
+    { name: 'Congo (DRC)', iso2: 'CD', flag: '🇨🇩', dialCode: '+243', minLength: 7, maxLength: 10 },
     { name: 'Costa Rica', iso2: 'CR', flag: '🇨🇷', dialCode: '+506', minLength: 8, maxLength: 8 },
     { name: 'Croatia', iso2: 'HR', flag: '🇭🇷', dialCode: '+385', minLength: 9, maxLength: 9 },
     { name: 'Cuba', iso2: 'CU', flag: '🇨🇺', dialCode: '+53', minLength: 8, maxLength: 8 },
