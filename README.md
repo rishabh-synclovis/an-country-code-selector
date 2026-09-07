@@ -139,7 +139,7 @@ export class ExampleComponent {
 Both are opt-in, off by default:
 
 - `[customSearch]="true"` — renders the `<input ngxCountrySearch>` you project inside `<ngx-country-select>` instead of the built-in search box. When `false` (default), the built-in box is used and any projected input is ignored.
-- `[showDialCode]="true"` — the closed trigger shows flag + dial code (e.g. `🇮🇳 +91`). When `false` (default), the trigger shows the flag only.
+- `[showDialCode]="true"` — the closed trigger shows flag + dial code (e.g. `🇮🇳 +91`) and is sized wider (`--ngx-ccp-trigger-dial-min-width`, default `90px`). When `false` (default), the trigger shows the flag only and shrinks to a narrower width (`--ngx-ccp-trigger-min-width`, default `46px`).
 
 ```ts
 import { CountrySelectComponent, NgxCountrySearchDirective } from 'an-country-code-selector';
@@ -170,6 +170,60 @@ countryCodeService.getByIso2('IN');       // { name: 'India', dialCode: '+91', .
 countryCodeService.search('united');      // matches by name, ISO2, or dial code
 countryCodeService.isValidLength(country, '9876543210');
 ```
+
+## Styling / customization
+
+The component's markup carries no hardcoded visual values — every color, spacing, border, radius, size, and shadow reads from a `--ngx-ccp-*` CSS custom property with a sensible default. Override any of them from your own stylesheet (they pierce Angular's view encapsulation, no `::ng-deep` or `!important` needed):
+
+```css
+/* your global styles, or a class on the host element */
+ngx-country-select {
+  --ngx-ccp-trigger-bg: #1e1e2e;
+  --ngx-ccp-trigger-border: 1px solid #444;
+  --ngx-ccp-trigger-radius: 999px;
+  --ngx-ccp-text-color: #eee;
+  --ngx-ccp-panel-bg: #1e1e2e;
+  --ngx-ccp-option-hover-bg: #33334d;
+}
+```
+
+| Variable                             | Default                        | Affects                              |
+| ------------------------------------- | ------------------------------- | ------------------------------------- |
+| `--ngx-ccp-font-family`               | `inherit`                      | Whole component                       |
+| `--ngx-ccp-font-size`                 | `14px`                         | Whole component                       |
+| `--ngx-ccp-text-color`                | `inherit`                      | Whole component's text color          |
+| `--ngx-ccp-disabled-opacity`          | `0.5`                          | Opacity when `disabled`               |
+| `--ngx-ccp-trigger-gap`               | `6px`                          | Trigger button                        |
+| `--ngx-ccp-trigger-padding`           | `6px 10px`                     | Trigger button                        |
+| `--ngx-ccp-trigger-border`            | `1px solid #ccc`               | Trigger button                        |
+| `--ngx-ccp-trigger-radius`            | `6px`                          | Trigger button                        |
+| `--ngx-ccp-trigger-bg`                | `#fff`                         | Trigger button                        |
+| `--ngx-ccp-trigger-min-width`         | `46px`                         | Trigger width when `showDialCode` is `false` (flag only) |
+| `--ngx-ccp-trigger-dial-min-width`    | `90px`                         | Trigger width when `showDialCode` is `true` (flag + code) |
+| `--ngx-ccp-placeholder-color`         | `#888`                         | "Select country" placeholder, empty-state text |
+| `--ngx-ccp-caret-margin-left`         | `auto`                         | Dropdown caret                        |
+| `--ngx-ccp-caret-size`                | `10px`                         | Dropdown caret                        |
+| `--ngx-ccp-caret-color`               | `#888`                         | Dropdown caret                        |
+| `--ngx-ccp-panel-gap`                 | `4px`                          | Space between trigger and panel       |
+| `--ngx-ccp-panel-z-index`             | `1000`                        | Dropdown panel stacking               |
+| `--ngx-ccp-panel-width`               | `260px`                        | Dropdown panel                        |
+| `--ngx-ccp-panel-max-height`          | `320px`                        | Dropdown panel                        |
+| `--ngx-ccp-panel-bg`                  | `#fff`                         | Dropdown panel                        |
+| `--ngx-ccp-panel-border`              | `1px solid #ccc`               | Dropdown panel                        |
+| `--ngx-ccp-panel-radius`              | `6px`                          | Dropdown panel                        |
+| `--ngx-ccp-panel-shadow`              | `0 4px 16px rgba(0,0,0,.12)`   | Dropdown panel                        |
+| `--ngx-ccp-search-padding`            | `8px 10px`                     | Built-in search box                   |
+| `--ngx-ccp-search-border-bottom`      | `1px solid #eee`               | Built-in search box                   |
+| `--ngx-ccp-search-font-size`          | `14px`                         | Built-in search box                   |
+| `--ngx-ccp-search-bg`                 | `transparent`                  | Built-in search box                   |
+| `--ngx-ccp-list-padding`              | `4px 0`                        | Option list                           |
+| `--ngx-ccp-option-gap`                | `8px`                          | Each option row                       |
+| `--ngx-ccp-option-padding`            | `6px 10px`                     | Each option row                       |
+| `--ngx-ccp-option-hover-bg`           | `#f0f4ff`                     | Hovered/active option row             |
+| `--ngx-ccp-dial-color`                | `#666`                         | Dial code text in the option list     |
+| `--ngx-ccp-empty-padding`             | `10px`                         | "No matches" row                      |
+
+If you need to go beyond CSS variables (different markup, icons instead of text, etc.), use `[customSearch]` to replace the search box and style the projected `<input>` however you like — the trigger and option list remain styleable via the variables above.
 
 ## API reference
 

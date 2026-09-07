@@ -13,6 +13,7 @@ export class App {
   protected readonly title = signal('demo');
   country?: Country;
   country2?: Country;
+  country3?: Country;
   mobile = '';
 
   onCountryChange(country: Country): void {

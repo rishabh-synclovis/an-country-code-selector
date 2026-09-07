@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+
+.demo-dark-select {
+  --ngx-ccp-trigger-bg: #1e1e2e;
+  --ngx-ccp-trigger-border: 1px solid #444;
+  --ngx-ccp-trigger-radius: 999px;
+  --ngx-ccp-trigger-padding: 8px 14px;
+  --ngx-ccp-text-color: #eee;
+  --ngx-ccp-caret-color: #eee;
+  --ngx-ccp-panel-bg: #1e1e2e;
+  --ngx-ccp-panel-border: 1px solid #444;
+  --ngx-ccp-panel-radius: 10px;
+  --ngx-ccp-option-hover-bg: #33334d;
+  --ngx-ccp-dial-color: #aaa;
+  --ngx-ccp-search-border-bottom: 1px solid #444;
+  --ngx-ccp-placeholder-color: #999;
+}
+

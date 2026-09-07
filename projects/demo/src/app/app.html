@@ -28,6 +28,15 @@
     </ngx-country-select>
   </div>
 
+  <h3>Custom styled via CSS variables (dark theme)</h3>
+  <div style="display: flex; gap: 8px; align-items: flex-start;">
+    <ngx-country-select
+      class="demo-dark-select"
+      [(ngModel)]="country3"
+      defaultIso2="GB"
+    ></ngx-country-select>
+  </div>
+
   <p *ngIf="country">
     Selected: {{ country.flag }} {{ country.name }} ({{ country.dialCode }}) — expects
     {{ country.minLength }}–{{ country.maxLength }} digits

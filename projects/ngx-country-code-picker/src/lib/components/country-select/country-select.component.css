@@ -1,79 +1,94 @@
+/*
+ * Every visual value below reads from a --ngx-ccp-* custom property with a
+ * fallback default, so consumers can override any of them from their own
+ * stylesheet (e.g. `ngx-country-select { --ngx-ccp-trigger-bg: #000; }`)
+ * without needing !important or to touch this file.
+ */
 .ngx-ccp {
   position: relative;
   display: inline-block;
-  font-family: inherit;
-  font-size: 14px;
+  font-family: var(--ngx-ccp-font-family, inherit);
+  font-size: var(--ngx-ccp-font-size, 14px);
+  color: var(--ngx-ccp-text-color, inherit);
 }
 
 .ngx-ccp--disabled {
-  opacity: 0.5;
+  opacity: var(--ngx-ccp-disabled-opacity, 0.5);
   pointer-events: none;
 }
 
 .ngx-ccp__trigger {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
+  gap: var(--ngx-ccp-trigger-gap, 6px);
+  padding: var(--ngx-ccp-trigger-padding, 6px 10px);
+  border: var(--ngx-ccp-trigger-border, 1px solid #ccc);
+  border-radius: var(--ngx-ccp-trigger-radius, 6px);
+  background: var(--ngx-ccp-trigger-bg, #fff);
+  color: inherit;
   cursor: pointer;
-  min-width: 90px;
+  /* Flag-only trigger is narrower by default; showDialCode widens it. */
+  min-width: var(--ngx-ccp-trigger-min-width, 46px);
+}
+
+.ngx-ccp--dial-code .ngx-ccp__trigger {
+  min-width: var(--ngx-ccp-trigger-dial-min-width, 90px);
 }
 
 .ngx-ccp__placeholder {
-  color: #888;
+  color: var(--ngx-ccp-placeholder-color, #888);
 }
 
 .ngx-ccp__caret {
-  margin-left: auto;
-  font-size: 10px;
-  color: #888;
+  margin-left: var(--ngx-ccp-caret-margin-left, auto);
+  font-size: var(--ngx-ccp-caret-size, 10px);
+  color: var(--ngx-ccp-caret-color, #888);
 }
 
 .ngx-ccp__panel {
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + var(--ngx-ccp-panel-gap, 4px));
   left: 0;
-  z-index: 1000;
-  width: 260px;
-  max-height: 320px;
+  z-index: var(--ngx-ccp-panel-z-index, 1000);
+  width: var(--ngx-ccp-panel-width, 260px);
+  max-height: var(--ngx-ccp-panel-max-height, 320px);
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  background: var(--ngx-ccp-panel-bg, #fff);
+  border: var(--ngx-ccp-panel-border, 1px solid #ccc);
+  border-radius: var(--ngx-ccp-panel-radius, 6px);
+  box-shadow: var(--ngx-ccp-panel-shadow, 0 4px 16px rgba(0, 0, 0, 0.12));
   overflow: hidden;
 }
 
 .ngx-ccp__search {
-  padding: 8px 10px;
+  padding: var(--ngx-ccp-search-padding, 8px 10px);
   border: none;
-  border-bottom: 1px solid #eee;
+  border-bottom: var(--ngx-ccp-search-border-bottom, 1px solid #eee);
   outline: none;
-  font-size: 14px;
+  font-size: var(--ngx-ccp-search-font-size, 14px);
+  background: var(--ngx-ccp-search-bg, transparent);
+  color: inherit;
 }
 
 .ngx-ccp__list {
   list-style: none;
   margin: 0;
-  padding: 4px 0;
+  padding: var(--ngx-ccp-list-padding, 4px 0);
   overflow-y: auto;
 }
 
 .ngx-ccp__option {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
+  gap: var(--ngx-ccp-option-gap, 8px);
+  padding: var(--ngx-ccp-option-padding, 6px 10px);
   cursor: pointer;
 }
 
 .ngx-ccp__option:hover,
 .ngx-ccp__option--active {
-  background: #f0f4ff;
+  background: var(--ngx-ccp-option-hover-bg, #f0f4ff);
 }
 
 .ngx-ccp__name {
@@ -84,11 +99,11 @@
 }
 
 .ngx-ccp__dial {
-  color: #666;
+  color: var(--ngx-ccp-dial-color, #666);
 }
 
 .ngx-ccp__empty {
-  padding: 10px;
-  color: #888;
+  padding: var(--ngx-ccp-empty-padding, 10px);
+  color: var(--ngx-ccp-placeholder-color, #888);
   text-align: center;
 }
