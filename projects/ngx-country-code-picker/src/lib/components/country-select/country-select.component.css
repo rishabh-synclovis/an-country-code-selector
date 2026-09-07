@@ -1,0 +1,94 @@
+.ngx-ccp {
+  position: relative;
+  display: inline-block;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.ngx-ccp--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.ngx-ccp__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  min-width: 90px;
+}
+
+.ngx-ccp__placeholder {
+  color: #888;
+}
+
+.ngx-ccp__caret {
+  margin-left: auto;
+  font-size: 10px;
+  color: #888;
+}
+
+.ngx-ccp__panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 1000;
+  width: 260px;
+  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.ngx-ccp__search {
+  padding: 8px 10px;
+  border: none;
+  border-bottom: 1px solid #eee;
+  outline: none;
+  font-size: 14px;
+}
+
+.ngx-ccp__list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  overflow-y: auto;
+}
+
+.ngx-ccp__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.ngx-ccp__option:hover,
+.ngx-ccp__option--active {
+  background: #f0f4ff;
+}
+
+.ngx-ccp__name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ngx-ccp__dial {
+  color: #666;
+}
+
+.ngx-ccp__empty {
+  padding: 10px;
+  color: #888;
+  text-align: center;
+}

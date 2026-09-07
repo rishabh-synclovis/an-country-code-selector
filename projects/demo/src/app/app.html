@@ -1,0 +1,24 @@
+<div style="padding: 40px; font-family: sans-serif;">
+  <h1>ngx-country-code-picker demo</h1>
+
+  <div style="display: flex; gap: 8px; align-items: flex-start;">
+    <ngx-country-select
+      [(ngModel)]="country"
+      defaultIso2="IN"
+      (countryChange)="onCountryChange($event)"
+    ></ngx-country-select>
+    <input
+      type="tel"
+      placeholder="Mobile number"
+      [(ngModel)]="mobile"
+      [attr.maxlength]="country?.maxLength"
+    />
+  </div>
+
+  <p *ngIf="country">
+    Selected: {{ country.flag }} {{ country.name }} ({{ country.dialCode }}) — expects
+    {{ country.minLength }}–{{ country.maxLength }} digits
+  </p>
+
+  <p>Mobile value: {{ mobile }} (length {{ mobile.length }})</p>
+</div>

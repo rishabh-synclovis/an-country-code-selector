@@ -1,0 +1,43 @@
+<div class="ngx-ccp" [class.ngx-ccp--disabled]="disabled">
+  <button
+    type="button"
+    class="ngx-ccp__trigger"
+    [attr.aria-expanded]="isOpen"
+    [disabled]="disabled"
+    (click)="toggle()"
+  >
+    <ng-container *ngIf="selected; else placeholderTpl">
+      <span class="ngx-ccp__flag">{{ selected.flag }}</span>
+      <span class="ngx-ccp__dial">{{ selected.dialCode }}</span>
+    </ng-container>
+    <ng-template #placeholderTpl>
+      <span class="ngx-ccp__placeholder">Select country</span>
+    </ng-template>
+    <span class="ngx-ccp__caret" aria-hidden="true">▾</span>
+  </button>
+
+  <div class="ngx-ccp__panel" *ngIf="isOpen">
+    <input
+      type="text"
+      class="ngx-ccp__search"
+      [placeholder]="placeholder"
+      [ngModel]="searchTerm"
+      (ngModelChange)="onSearch($event)"
+      autocomplete="off"
+    />
+    <ul class="ngx-ccp__list" role="listbox">
+      <li
+        *ngFor="let country of filtered"
+        class="ngx-ccp__option"
+        [class.ngx-ccp__option--active]="selected?.iso2 === country.iso2"
+        role="option"
+        (click)="select(country)"
+      >
+        <span class="ngx-ccp__flag">{{ country.flag }}</span>
+        <span class="ngx-ccp__name">{{ country.name }}</span>
+        <span class="ngx-ccp__dial">{{ country.dialCode }}</span>
+      </li>
+      <li class="ngx-ccp__empty" *ngIf="filtered.length === 0">No matches</li>
+    </ul>
+  </div>
+</div>
