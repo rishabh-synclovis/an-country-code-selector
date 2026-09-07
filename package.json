@@ -1,12 +1,32 @@
 {
-  "name": "country-code-workspace",
-  "version": "0.0.0",
+  "name": "an-country-code-selector",
+  "version": "0.0.1",
+  "description": "Lightweight country code selection dropdown library for Angular",
+  "module": "fesm2022/an-country-code-selector.mjs",
+  "typings": "index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./fesm2022/an-country-code-selector.mjs"
+    }
+  },
+  "files": [
+    "fesm2022",
+    "index.d.ts",
+    "README.md"
+  ],
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "start": "ng serve demo",
+    "build": "ng build ngx-country-code-picker",
+    "postbuild": "node scripts/copy-dist-to-root.js",
+    "watch": "ng build ngx-country-code-picker --watch --configuration development",
+    "test": "ng test",
+    "prepare": "npm run build"
   },
   "prettier": {
     "overrides": [
@@ -18,22 +38,21 @@
       }
     ]
   },
-  "private": true,
+  "peerDependencies": {
+    "@angular/common": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/forms": "^20.3.0"
+  },
   "dependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/compiler": "^20.0.0",
-    "@angular/core": "^20.0.0",
-    "@angular/forms": "^20.0.0",
-    "@angular/platform-browser": "^20.0.0",
-    "@angular/router": "^20.0.0",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.15.0"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@angular/build": "^20.3.36",
     "@angular/cli": "^20.0.4",
+    "@angular/compiler": "^20.0.0",
     "@angular/compiler-cli": "^20.0.0",
+    "@angular/platform-browser": "^20.0.0",
+    "@angular/router": "^20.0.0",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.7.0",
     "karma": "~6.4.0",
@@ -42,6 +61,8 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^20.3.0",
-    "typescript": "~5.8.2"
+    "rxjs": "~7.8.0",
+    "typescript": "~5.8.2",
+    "zone.js": "~0.15.0"
   }
 }
