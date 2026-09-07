@@ -5,7 +5,7 @@ Lightweight, dependency-free (beyond Angular itself) country code selection drop
 ## Features
 
 - Country **name**, **flag** (unicode emoji, no image assets), **dial code**, and mobile number **minLength**/**maxLength**
-- Standalone `<ngx-country-select>` dropdown with built-in search
+- Standalone `<ngx-country-select>` dropdown — trigger shows the flag only by default (opt into `showDialCode` for flag+code); built-in search box by default (opt into `customSearch` to project your own input)
 - Implements `ControlValueAccessor` — works with `ngModel` and reactive forms out of the box
 - `CountryCodeService` for programmatic lookup/search/validation
 - `mobileLengthValidator` reactive-forms validator wired to the selected country's min/max length
@@ -88,6 +88,30 @@ export class ExampleComponent {
 }
 ```
 
+### Using your own search input, and showing the dial code
+
+Both are opt-in, off by default:
+
+- `[customSearch]="true"` — renders the `<input ngxCountrySearch>` you project inside `<ngx-country-select>` instead of the library's built-in search box. When `false` (default), any projected `ngxCountrySearch` input is ignored and the built-in box is used.
+- `[showDialCode]="true"` — the closed trigger shows flag + dial code (e.g. `🇮🇳 +91`). When `false` (default), the trigger shows the flag only.
+
+```ts
+import { CountrySelectComponent, NgxCountrySearchDirective } from 'an-country-code-selector';
+
+@Component({
+  standalone: true,
+  imports: [CountrySelectComponent, NgxCountrySearchDirective],
+  template: `
+    <ngx-country-select [(ngModel)]="country" [customSearch]="true" [showDialCode]="true">
+      <input ngxCountrySearch type="text" class="my-own-styles" placeholder="Search…" />
+    </ngx-country-select>
+  `,
+})
+export class ExampleComponent {
+  country?: Country;
+}
+```
+
 ### Programmatic lookup
 
 ```ts
@@ -116,9 +140,20 @@ countryCodeService.isValidLength(country, '9876543210');
 
 ### `CountrySelectComponent` (`ngx-country-select`)
 
-Inputs: `defaultIso2`, `disabled`, `placeholder`
+| Input          | Type      | Default | Description                                                          |
+| -------------- | --------- | ------- | --------------------------------------------------------------------- |
+| `defaultIso2`  | `string`  | —       | Preselected country, e.g. `"IN"`                                     |
+| `disabled`     | `boolean` | `false` | Disables the control                                                 |
+| `placeholder`  | `string`  | `'Search country or code'` | Built-in search box placeholder; ignored when `customSearch` is `true` |
+| `customSearch` | `boolean` | `false` | Use your own projected `ngxCountrySearch` input instead of the built-in search box |
+| `showDialCode` | `boolean` | `false` | Show flag + dial code on the trigger instead of flag only            |
+
 Outputs: `countryChange`
 Supports `ngModel` / `formControlName` (emits/accepts a `Country`).
+
+### `NgxCountrySearchDirective` (`input[ngxCountrySearch]`)
+
+Apply to your own `<input>` projected inside `<ngx-country-select>`. Only takes effect when the host's `customSearch` input is `true`.
 
 ### `CountryCodeService`
 

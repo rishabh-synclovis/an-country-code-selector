@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -39,8 +40,21 @@ export class CountrySelectComponent implements ControlValueAccessor, OnInit {
   /** Disable the control. */
   @Input() disabled = false;
 
-  /** Placeholder shown in the search box. */
+  /** Placeholder shown in the search box. Ignored when customSearch is true. */
   @Input() placeholder = 'Search country or code';
+
+  /**
+   * When true, renders the <input ngxCountrySearch> projected into this
+   * component instead of the built-in search box. Default false — the
+   * built-in search box is used unless explicitly opted out of.
+   */
+  @Input() customSearch = false;
+
+  /**
+   * When true, the closed trigger shows the selected country's dial code
+   * next to its flag. Default false — flag only.
+   */
+  @Input() showDialCode = false;
 
   /** Emits the selected Country whenever it changes. */
   @Output() countryChange = new EventEmitter<Country>();
@@ -57,7 +71,8 @@ export class CountrySelectComponent implements ControlValueAccessor, OnInit {
 
   constructor(
     private readonly countryCodeService: CountryCodeService,
-    private readonly elementRef: ElementRef<HTMLElement>
+    private readonly elementRef: ElementRef<HTMLElement>,
+    private readonly changeDetectorRef: ChangeDetectorRef
   ) {
     this.filtered = this.countryCodeService.countries;
   }
@@ -84,6 +99,7 @@ export class CountrySelectComponent implements ControlValueAccessor, OnInit {
   onSearch(term: string): void {
     this.searchTerm = term;
     this.filtered = this.countryCodeService.search(term);
+    this.changeDetectorRef.markForCheck();
   }
 
   select(country: Country): void {

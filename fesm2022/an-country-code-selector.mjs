@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { Injectable, EventEmitter, forwardRef, HostListener, Output, Input, ChangeDetectionStrategy, Component } from '@angular/core';
+import { Injectable, EventEmitter, forwardRef, HostListener, Output, Input, ChangeDetectionStrategy, Component, Inject, Directive } from '@angular/core';
 import * as i2 from '@angular/common';
 import { CommonModule } from '@angular/common';
 import * as i3 from '@angular/forms';
@@ -247,12 +247,24 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.30", ngImpo
 class CountrySelectComponent {
     countryCodeService;
     elementRef;
+    changeDetectorRef;
     /** Preselected ISO2 code, e.g. "IN". Overridden by writeValue() when used as a form control. */
     defaultIso2;
     /** Disable the control. */
     disabled = false;
-    /** Placeholder shown in the search box. */
+    /** Placeholder shown in the search box. Ignored when customSearch is true. */
     placeholder = 'Search country or code';
+    /**
+     * When true, renders the <input ngxCountrySearch> projected into this
+     * component instead of the built-in search box. Default false — the
+     * built-in search box is used unless explicitly opted out of.
+     */
+    customSearch = false;
+    /**
+     * When true, the closed trigger shows the selected country's dial code
+     * next to its flag. Default false — flag only.
+     */
+    showDialCode = false;
     /** Emits the selected Country whenever it changes. */
     countryChange = new EventEmitter();
     isOpen = false;
@@ -262,9 +274,10 @@ class CountrySelectComponent {
     valueWritten = false;
     onChange = () => { };
     onTouched = () => { };
-    constructor(countryCodeService, elementRef) {
+    constructor(countryCodeService, elementRef, changeDetectorRef) {
         this.countryCodeService = countryCodeService;
         this.elementRef = elementRef;
+        this.changeDetectorRef = changeDetectorRef;
         this.filtered = this.countryCodeService.countries;
     }
     ngOnInit() {
@@ -288,6 +301,7 @@ class CountrySelectComponent {
     onSearch(term) {
         this.searchTerm = term;
         this.filtered = this.countryCodeService.search(term);
+        this.changeDetectorRef.markForCheck();
     }
     select(country) {
         this.selected = country;
@@ -323,14 +337,14 @@ class CountrySelectComponent {
     setDisabledState(isDisabled) {
         this.disabled = isDisabled;
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.30", ngImport: i0, type: CountrySelectComponent, deps: [{ token: CountryCodeService }, { token: i0.ElementRef }], target: i0.ɵɵFactoryTarget.Component });
-    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.30", type: CountrySelectComponent, isStandalone: true, selector: "ngx-country-select", inputs: { defaultIso2: "defaultIso2", disabled: "disabled", placeholder: "placeholder" }, outputs: { countryChange: "countryChange" }, host: { listeners: { "document:click": "onDocumentClick($event)", "keydown.escape": "onEscape()" } }, providers: [
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.30", ngImport: i0, type: CountrySelectComponent, deps: [{ token: CountryCodeService }, { token: i0.ElementRef }, { token: i0.ChangeDetectorRef }], target: i0.ɵɵFactoryTarget.Component });
+    static ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "20.3.30", type: CountrySelectComponent, isStandalone: true, selector: "ngx-country-select", inputs: { defaultIso2: "defaultIso2", disabled: "disabled", placeholder: "placeholder", customSearch: "customSearch", showDialCode: "showDialCode" }, outputs: { countryChange: "countryChange" }, host: { listeners: { "document:click": "onDocumentClick($event)", "keydown.escape": "onEscape()" } }, providers: [
             {
                 provide: NG_VALUE_ACCESSOR,
                 useExisting: forwardRef(() => CountrySelectComponent),
                 multi: true,
             },
-        ], ngImport: i0, template: "<div class=\"ngx-ccp\" [class.ngx-ccp--disabled]=\"disabled\">\n  <button\n    type=\"button\"\n    class=\"ngx-ccp__trigger\"\n    [attr.aria-expanded]=\"isOpen\"\n    [disabled]=\"disabled\"\n    (click)=\"toggle()\"\n  >\n    <ng-container *ngIf=\"selected; else placeholderTpl\">\n      <span class=\"ngx-ccp__flag\">{{ selected.flag }}</span>\n      <span class=\"ngx-ccp__dial\">{{ selected.dialCode }}</span>\n    </ng-container>\n    <ng-template #placeholderTpl>\n      <span class=\"ngx-ccp__placeholder\">Select country</span>\n    </ng-template>\n    <span class=\"ngx-ccp__caret\" aria-hidden=\"true\">\u25BE</span>\n  </button>\n\n  <div class=\"ngx-ccp__panel\" *ngIf=\"isOpen\">\n    <input\n      type=\"text\"\n      class=\"ngx-ccp__search\"\n      [placeholder]=\"placeholder\"\n      [ngModel]=\"searchTerm\"\n      (ngModelChange)=\"onSearch($event)\"\n      autocomplete=\"off\"\n    />\n    <ul class=\"ngx-ccp__list\" role=\"listbox\">\n      <li\n        *ngFor=\"let country of filtered\"\n        class=\"ngx-ccp__option\"\n        [class.ngx-ccp__option--active]=\"selected?.iso2 === country.iso2\"\n        role=\"option\"\n        (click)=\"select(country)\"\n      >\n        <span class=\"ngx-ccp__flag\">{{ country.flag }}</span>\n        <span class=\"ngx-ccp__name\">{{ country.name }}</span>\n        <span class=\"ngx-ccp__dial\">{{ country.dialCode }}</span>\n      </li>\n      <li class=\"ngx-ccp__empty\" *ngIf=\"filtered.length === 0\">No matches</li>\n    </ul>\n  </div>\n</div>\n", styles: [".ngx-ccp{position:relative;display:inline-block;font-family:inherit;font-size:14px}.ngx-ccp--disabled{opacity:.5;pointer-events:none}.ngx-ccp__trigger{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;min-width:90px}.ngx-ccp__placeholder{color:#888}.ngx-ccp__caret{margin-left:auto;font-size:10px;color:#888}.ngx-ccp__panel{position:absolute;top:calc(100% + 4px);left:0;z-index:1000;width:260px;max-height:320px;display:flex;flex-direction:column;background:#fff;border:1px solid #ccc;border-radius:6px;box-shadow:0 4px 16px #0000001f;overflow:hidden}.ngx-ccp__search{padding:8px 10px;border:none;border-bottom:1px solid #eee;outline:none;font-size:14px}.ngx-ccp__list{list-style:none;margin:0;padding:4px 0;overflow-y:auto}.ngx-ccp__option{display:flex;align-items:center;gap:8px;padding:6px 10px;cursor:pointer}.ngx-ccp__option:hover,.ngx-ccp__option--active{background:#f0f4ff}.ngx-ccp__name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ngx-ccp__dial{color:#666}.ngx-ccp__empty{padding:10px;color:#888;text-align:center}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i3.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
+        ], ngImport: i0, template: "<div class=\"ngx-ccp\" [class.ngx-ccp--disabled]=\"disabled\">\n  <button\n    type=\"button\"\n    class=\"ngx-ccp__trigger\"\n    [attr.aria-expanded]=\"isOpen\"\n    [disabled]=\"disabled\"\n    (click)=\"toggle()\"\n  >\n    <ng-container *ngIf=\"selected; else placeholderTpl\">\n      <span class=\"ngx-ccp__flag\">{{ selected.flag }}</span>\n      <span class=\"ngx-ccp__dial\" *ngIf=\"showDialCode\">{{ selected.dialCode }}</span>\n    </ng-container>\n    <ng-template #placeholderTpl>\n      <span class=\"ngx-ccp__placeholder\">Select country</span>\n    </ng-template>\n    <span class=\"ngx-ccp__caret\" aria-hidden=\"true\">\u25BE</span>\n  </button>\n\n  <div class=\"ngx-ccp__panel\" *ngIf=\"isOpen\">\n    <ng-content select=\"[ngxCountrySearch]\" *ngIf=\"customSearch\"></ng-content>\n    <input\n      *ngIf=\"!customSearch\"\n      type=\"text\"\n      class=\"ngx-ccp__search\"\n      [placeholder]=\"placeholder\"\n      [ngModel]=\"searchTerm\"\n      (ngModelChange)=\"onSearch($event)\"\n      autocomplete=\"off\"\n    />\n    <ul class=\"ngx-ccp__list\" role=\"listbox\">\n      <li\n        *ngFor=\"let country of filtered\"\n        class=\"ngx-ccp__option\"\n        [class.ngx-ccp__option--active]=\"selected?.iso2 === country.iso2\"\n        role=\"option\"\n        (click)=\"select(country)\"\n      >\n        <span class=\"ngx-ccp__flag\">{{ country.flag }}</span>\n        <span class=\"ngx-ccp__name\">{{ country.name }}</span>\n        <span class=\"ngx-ccp__dial\">{{ country.dialCode }}</span>\n      </li>\n      <li class=\"ngx-ccp__empty\" *ngIf=\"filtered.length === 0\">No matches</li>\n    </ul>\n  </div>\n</div>\n", styles: [".ngx-ccp{position:relative;display:inline-block;font-family:inherit;font-size:14px}.ngx-ccp--disabled{opacity:.5;pointer-events:none}.ngx-ccp__trigger{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;min-width:90px}.ngx-ccp__placeholder{color:#888}.ngx-ccp__caret{margin-left:auto;font-size:10px;color:#888}.ngx-ccp__panel{position:absolute;top:calc(100% + 4px);left:0;z-index:1000;width:260px;max-height:320px;display:flex;flex-direction:column;background:#fff;border:1px solid #ccc;border-radius:6px;box-shadow:0 4px 16px #0000001f;overflow:hidden}.ngx-ccp__search{padding:8px 10px;border:none;border-bottom:1px solid #eee;outline:none;font-size:14px}.ngx-ccp__list{list-style:none;margin:0;padding:4px 0;overflow-y:auto}.ngx-ccp__option{display:flex;align-items:center;gap:8px;padding:6px 10px;cursor:pointer}.ngx-ccp__option:hover,.ngx-ccp__option--active{background:#f0f4ff}.ngx-ccp__name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ngx-ccp__dial{color:#666}.ngx-ccp__empty{padding:10px;color:#888;text-align:center}\n"], dependencies: [{ kind: "ngmodule", type: CommonModule }, { kind: "directive", type: i2.NgForOf, selector: "[ngFor][ngForOf]", inputs: ["ngForOf", "ngForTrackBy", "ngForTemplate"] }, { kind: "directive", type: i2.NgIf, selector: "[ngIf]", inputs: ["ngIf", "ngIfThen", "ngIfElse"] }, { kind: "ngmodule", type: FormsModule }, { kind: "directive", type: i3.DefaultValueAccessor, selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]" }, { kind: "directive", type: i3.NgControlStatus, selector: "[formControlName],[ngModel],[formControl]" }, { kind: "directive", type: i3.NgModel, selector: "[ngModel]:not([formControlName]):not([formControl])", inputs: ["name", "disabled", "ngModel", "ngModelOptions"], outputs: ["ngModelChange"], exportAs: ["ngModel"] }], changeDetection: i0.ChangeDetectionStrategy.OnPush });
 }
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.30", ngImport: i0, type: CountrySelectComponent, decorators: [{
             type: Component,
@@ -342,18 +356,57 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.30", ngImpo
                         },
                     ], host: {
                         '(document:click)': 'onDocumentClick($event)',
-                    }, template: "<div class=\"ngx-ccp\" [class.ngx-ccp--disabled]=\"disabled\">\n  <button\n    type=\"button\"\n    class=\"ngx-ccp__trigger\"\n    [attr.aria-expanded]=\"isOpen\"\n    [disabled]=\"disabled\"\n    (click)=\"toggle()\"\n  >\n    <ng-container *ngIf=\"selected; else placeholderTpl\">\n      <span class=\"ngx-ccp__flag\">{{ selected.flag }}</span>\n      <span class=\"ngx-ccp__dial\">{{ selected.dialCode }}</span>\n    </ng-container>\n    <ng-template #placeholderTpl>\n      <span class=\"ngx-ccp__placeholder\">Select country</span>\n    </ng-template>\n    <span class=\"ngx-ccp__caret\" aria-hidden=\"true\">\u25BE</span>\n  </button>\n\n  <div class=\"ngx-ccp__panel\" *ngIf=\"isOpen\">\n    <input\n      type=\"text\"\n      class=\"ngx-ccp__search\"\n      [placeholder]=\"placeholder\"\n      [ngModel]=\"searchTerm\"\n      (ngModelChange)=\"onSearch($event)\"\n      autocomplete=\"off\"\n    />\n    <ul class=\"ngx-ccp__list\" role=\"listbox\">\n      <li\n        *ngFor=\"let country of filtered\"\n        class=\"ngx-ccp__option\"\n        [class.ngx-ccp__option--active]=\"selected?.iso2 === country.iso2\"\n        role=\"option\"\n        (click)=\"select(country)\"\n      >\n        <span class=\"ngx-ccp__flag\">{{ country.flag }}</span>\n        <span class=\"ngx-ccp__name\">{{ country.name }}</span>\n        <span class=\"ngx-ccp__dial\">{{ country.dialCode }}</span>\n      </li>\n      <li class=\"ngx-ccp__empty\" *ngIf=\"filtered.length === 0\">No matches</li>\n    </ul>\n  </div>\n</div>\n", styles: [".ngx-ccp{position:relative;display:inline-block;font-family:inherit;font-size:14px}.ngx-ccp--disabled{opacity:.5;pointer-events:none}.ngx-ccp__trigger{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;min-width:90px}.ngx-ccp__placeholder{color:#888}.ngx-ccp__caret{margin-left:auto;font-size:10px;color:#888}.ngx-ccp__panel{position:absolute;top:calc(100% + 4px);left:0;z-index:1000;width:260px;max-height:320px;display:flex;flex-direction:column;background:#fff;border:1px solid #ccc;border-radius:6px;box-shadow:0 4px 16px #0000001f;overflow:hidden}.ngx-ccp__search{padding:8px 10px;border:none;border-bottom:1px solid #eee;outline:none;font-size:14px}.ngx-ccp__list{list-style:none;margin:0;padding:4px 0;overflow-y:auto}.ngx-ccp__option{display:flex;align-items:center;gap:8px;padding:6px 10px;cursor:pointer}.ngx-ccp__option:hover,.ngx-ccp__option--active{background:#f0f4ff}.ngx-ccp__name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ngx-ccp__dial{color:#666}.ngx-ccp__empty{padding:10px;color:#888;text-align:center}\n"] }]
-        }], ctorParameters: () => [{ type: CountryCodeService }, { type: i0.ElementRef }], propDecorators: { defaultIso2: [{
+                    }, template: "<div class=\"ngx-ccp\" [class.ngx-ccp--disabled]=\"disabled\">\n  <button\n    type=\"button\"\n    class=\"ngx-ccp__trigger\"\n    [attr.aria-expanded]=\"isOpen\"\n    [disabled]=\"disabled\"\n    (click)=\"toggle()\"\n  >\n    <ng-container *ngIf=\"selected; else placeholderTpl\">\n      <span class=\"ngx-ccp__flag\">{{ selected.flag }}</span>\n      <span class=\"ngx-ccp__dial\" *ngIf=\"showDialCode\">{{ selected.dialCode }}</span>\n    </ng-container>\n    <ng-template #placeholderTpl>\n      <span class=\"ngx-ccp__placeholder\">Select country</span>\n    </ng-template>\n    <span class=\"ngx-ccp__caret\" aria-hidden=\"true\">\u25BE</span>\n  </button>\n\n  <div class=\"ngx-ccp__panel\" *ngIf=\"isOpen\">\n    <ng-content select=\"[ngxCountrySearch]\" *ngIf=\"customSearch\"></ng-content>\n    <input\n      *ngIf=\"!customSearch\"\n      type=\"text\"\n      class=\"ngx-ccp__search\"\n      [placeholder]=\"placeholder\"\n      [ngModel]=\"searchTerm\"\n      (ngModelChange)=\"onSearch($event)\"\n      autocomplete=\"off\"\n    />\n    <ul class=\"ngx-ccp__list\" role=\"listbox\">\n      <li\n        *ngFor=\"let country of filtered\"\n        class=\"ngx-ccp__option\"\n        [class.ngx-ccp__option--active]=\"selected?.iso2 === country.iso2\"\n        role=\"option\"\n        (click)=\"select(country)\"\n      >\n        <span class=\"ngx-ccp__flag\">{{ country.flag }}</span>\n        <span class=\"ngx-ccp__name\">{{ country.name }}</span>\n        <span class=\"ngx-ccp__dial\">{{ country.dialCode }}</span>\n      </li>\n      <li class=\"ngx-ccp__empty\" *ngIf=\"filtered.length === 0\">No matches</li>\n    </ul>\n  </div>\n</div>\n", styles: [".ngx-ccp{position:relative;display:inline-block;font-family:inherit;font-size:14px}.ngx-ccp--disabled{opacity:.5;pointer-events:none}.ngx-ccp__trigger{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;min-width:90px}.ngx-ccp__placeholder{color:#888}.ngx-ccp__caret{margin-left:auto;font-size:10px;color:#888}.ngx-ccp__panel{position:absolute;top:calc(100% + 4px);left:0;z-index:1000;width:260px;max-height:320px;display:flex;flex-direction:column;background:#fff;border:1px solid #ccc;border-radius:6px;box-shadow:0 4px 16px #0000001f;overflow:hidden}.ngx-ccp__search{padding:8px 10px;border:none;border-bottom:1px solid #eee;outline:none;font-size:14px}.ngx-ccp__list{list-style:none;margin:0;padding:4px 0;overflow-y:auto}.ngx-ccp__option{display:flex;align-items:center;gap:8px;padding:6px 10px;cursor:pointer}.ngx-ccp__option:hover,.ngx-ccp__option--active{background:#f0f4ff}.ngx-ccp__name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ngx-ccp__dial{color:#666}.ngx-ccp__empty{padding:10px;color:#888;text-align:center}\n"] }]
+        }], ctorParameters: () => [{ type: CountryCodeService }, { type: i0.ElementRef }, { type: i0.ChangeDetectorRef }], propDecorators: { defaultIso2: [{
                 type: Input
             }], disabled: [{
                 type: Input
             }], placeholder: [{
+                type: Input
+            }], customSearch: [{
+                type: Input
+            }], showDialCode: [{
                 type: Input
             }], countryChange: [{
                 type: Output
             }], onEscape: [{
                 type: HostListener,
                 args: ['keydown.escape']
+            }] } });
+
+/**
+ * Apply to your own <input> projected inside <ngx-country-select> to use it
+ * as the search box instead of the library's built-in one. Only takes effect
+ * when the host component's `customSearch` input is set to true:
+ *
+ *   <ngx-country-select [customSearch]="true">
+ *     <input ngxCountrySearch placeholder="Search..." />
+ *   </ngx-country-select>
+ */
+class NgxCountrySearchDirective {
+    countrySelect;
+    constructor(countrySelect) {
+        this.countrySelect = countrySelect;
+    }
+    onInput(event) {
+        const value = event.target.value;
+        this.countrySelect.onSearch(value);
+    }
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.30", ngImport: i0, type: NgxCountrySearchDirective, deps: [{ token: forwardRef(() => CountrySelectComponent) }], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.3.30", type: NgxCountrySearchDirective, isStandalone: true, selector: "input[ngxCountrySearch]", host: { listeners: { "input": "onInput($event)" } }, ngImport: i0 });
+}
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.30", ngImport: i0, type: NgxCountrySearchDirective, decorators: [{
+            type: Directive,
+            args: [{
+                    selector: 'input[ngxCountrySearch]',
+                    standalone: true,
+                }]
+        }], ctorParameters: () => [{ type: CountrySelectComponent, decorators: [{
+                    type: Inject,
+                    args: [forwardRef(() => CountrySelectComponent)]
+                }] }], propDecorators: { onInput: [{
+                type: HostListener,
+                args: ['input', ['$event']]
             }] } });
 
 /**
@@ -391,5 +444,5 @@ function mobileLengthValidator(getCountry) {
  * Generated bundle index. Do not edit.
  */
 
-export { CountryCodeService, CountrySelectComponent, mobileLengthValidator };
+export { CountryCodeService, CountrySelectComponent, NgxCountrySearchDirective, mobileLengthValidator };
 //# sourceMappingURL=an-country-code-selector.mjs.map

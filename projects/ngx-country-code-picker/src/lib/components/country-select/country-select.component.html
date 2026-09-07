@@ -8,7 +8,7 @@
   >
     <ng-container *ngIf="selected; else placeholderTpl">
       <span class="ngx-ccp__flag">{{ selected.flag }}</span>
-      <span class="ngx-ccp__dial">{{ selected.dialCode }}</span>
+      <span class="ngx-ccp__dial" *ngIf="showDialCode">{{ selected.dialCode }}</span>
     </ng-container>
     <ng-template #placeholderTpl>
       <span class="ngx-ccp__placeholder">Select country</span>
@@ -17,7 +17,9 @@
   </button>
 
   <div class="ngx-ccp__panel" *ngIf="isOpen">
+    <ng-content select="[ngxCountrySearch]" *ngIf="customSearch"></ng-content>
     <input
+      *ngIf="!customSearch"
       type="text"
       class="ngx-ccp__search"
       [placeholder]="placeholder"

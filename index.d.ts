@@ -1,5 +1,5 @@
 import * as i0 from '@angular/core';
-import { OnInit, EventEmitter, ElementRef } from '@angular/core';
+import { OnInit, EventEmitter, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, ValidatorFn } from '@angular/forms';
 
 /** A single country entry used by the picker. */
@@ -36,12 +36,24 @@ declare class CountryCodeService {
 declare class CountrySelectComponent implements ControlValueAccessor, OnInit {
     private readonly countryCodeService;
     private readonly elementRef;
+    private readonly changeDetectorRef;
     /** Preselected ISO2 code, e.g. "IN". Overridden by writeValue() when used as a form control. */
     defaultIso2: string | undefined;
     /** Disable the control. */
     disabled: boolean;
-    /** Placeholder shown in the search box. */
+    /** Placeholder shown in the search box. Ignored when customSearch is true. */
     placeholder: string;
+    /**
+     * When true, renders the <input ngxCountrySearch> projected into this
+     * component instead of the built-in search box. Default false — the
+     * built-in search box is used unless explicitly opted out of.
+     */
+    customSearch: boolean;
+    /**
+     * When true, the closed trigger shows the selected country's dial code
+     * next to its flag. Default false — flag only.
+     */
+    showDialCode: boolean;
     /** Emits the selected Country whenever it changes. */
     countryChange: EventEmitter<Country>;
     isOpen: boolean;
@@ -51,7 +63,7 @@ declare class CountrySelectComponent implements ControlValueAccessor, OnInit {
     private valueWritten;
     private onChange;
     private onTouched;
-    constructor(countryCodeService: CountryCodeService, elementRef: ElementRef<HTMLElement>);
+    constructor(countryCodeService: CountryCodeService, elementRef: ElementRef<HTMLElement>, changeDetectorRef: ChangeDetectorRef);
     ngOnInit(): void;
     toggle(): void;
     onSearch(term: string): void;
@@ -63,7 +75,24 @@ declare class CountrySelectComponent implements ControlValueAccessor, OnInit {
     registerOnTouched(fn: () => void): void;
     setDisabledState(isDisabled: boolean): void;
     static ɵfac: i0.ɵɵFactoryDeclaration<CountrySelectComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<CountrySelectComponent, "ngx-country-select", never, { "defaultIso2": { "alias": "defaultIso2"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; }, { "countryChange": "countryChange"; }, never, never, true, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<CountrySelectComponent, "ngx-country-select", never, { "defaultIso2": { "alias": "defaultIso2"; "required": false; }; "disabled": { "alias": "disabled"; "required": false; }; "placeholder": { "alias": "placeholder"; "required": false; }; "customSearch": { "alias": "customSearch"; "required": false; }; "showDialCode": { "alias": "showDialCode"; "required": false; }; }, { "countryChange": "countryChange"; }, never, ["[ngxCountrySearch]"], true, never>;
+}
+
+/**
+ * Apply to your own <input> projected inside <ngx-country-select> to use it
+ * as the search box instead of the library's built-in one. Only takes effect
+ * when the host component's `customSearch` input is set to true:
+ *
+ *   <ngx-country-select [customSearch]="true">
+ *     <input ngxCountrySearch placeholder="Search..." />
+ *   </ngx-country-select>
+ */
+declare class NgxCountrySearchDirective {
+    private readonly countrySelect;
+    constructor(countrySelect: CountrySelectComponent);
+    onInput(event: Event): void;
+    static ɵfac: i0.ɵɵFactoryDeclaration<NgxCountrySearchDirective, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<NgxCountrySearchDirective, "input[ngxCountrySearch]", never, {}, {}, never, never, true, never>;
 }
 
 /**
@@ -74,5 +103,5 @@ declare class CountrySelectComponent implements ControlValueAccessor, OnInit {
  */
 declare function mobileLengthValidator(getCountry: () => Country | undefined): ValidatorFn;
 
-export { CountryCodeService, CountrySelectComponent, mobileLengthValidator };
+export { CountryCodeService, CountrySelectComponent, NgxCountrySearchDirective, mobileLengthValidator };
 export type { Country };

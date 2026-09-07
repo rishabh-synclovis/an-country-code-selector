@@ -1,6 +1,7 @@
 <div style="padding: 40px; font-family: sans-serif;">
   <h1>ngx-country-code-picker demo</h1>
 
+  <h3>Default (built-in search, flag only)</h3>
   <div style="display: flex; gap: 8px; align-items: flex-start;">
     <ngx-country-select
       [(ngModel)]="country"
@@ -13,6 +14,18 @@
       [(ngModel)]="mobile"
       [attr.maxlength]="country?.maxLength"
     />
+  </div>
+
+  <h3>Custom search + dial code shown</h3>
+  <div style="display: flex; gap: 8px; align-items: flex-start;">
+    <ngx-country-select
+      [(ngModel)]="country2"
+      [customSearch]="true"
+      [showDialCode]="true"
+      defaultIso2="US"
+    >
+      <input ngxCountrySearch type="text" placeholder="My custom search box…" />
+    </ngx-country-select>
   </div>
 
   <p *ngIf="country">
